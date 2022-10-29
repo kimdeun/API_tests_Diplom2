@@ -1,4 +1,5 @@
 import api.auth.AuthClient;
+import api.data.ChangingDataClient;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,6 +10,7 @@ import static io.restassured.RestAssured.given;
 
 public class BaseTest {
     AuthClient authClient = new AuthClient();
+    ChangingDataClient changingDataClient = new ChangingDataClient();
     String userEmail = RandomStringUtils.randomAlphanumeric(7) + "@gmail.com";
     String userPassword = RandomStringUtils.randomAlphabetic(7);
     String nameOfUser = RandomStringUtils.randomAlphabetic(7);
