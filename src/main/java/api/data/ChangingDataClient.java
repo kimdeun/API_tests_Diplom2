@@ -1,5 +1,6 @@
 package api.data;
 
+import constants.EndPoints;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
@@ -21,7 +22,7 @@ public class ChangingDataClient {
                 .header("Authorization", "Bearer " + tokenForRequest)
                 .header("Content-type", "application/json")
                 .body(jsonForRequest)
-                .patch("/api/auth/user")
+                .patch(EndPoints.userDataEndPoint)
                 .then().log().all();
     }
 
@@ -31,7 +32,16 @@ public class ChangingDataClient {
                 .log().all()
                 .header("Content-type", "application/json")
                 .body(jsonForRequest)
-                .patch("/api/auth/user")
+                .patch(EndPoints.userDataEndPoint)
                 .then().log().all();
+    }
+
+    @Step("Удаляем пользователя")
+    public ValidatableResponse getResponseForDeletingUser(String tokenForRequest) {
+        return given()
+                .header("Authorization", "Bearer " + tokenForRequest)
+                .when()
+                .delete(EndPoints.userDataEndPoint)
+                .then();
     }
 }

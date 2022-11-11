@@ -1,17 +1,26 @@
 import io.qameta.allure.junit4.DisplayName;
-import org.apache.commons.lang3.RandomStringUtils;
+import io.restassured.RestAssured;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class ChangingUserDataTest extends BaseTest {
+    @Override
+    @Before
+    public void setUp() {
+        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
+        mapWithJson.put("newEmail", "{\"email\": \"" + newUserEmailForRequest + "\"}");
+        mapWithJson.put("newPassword", "{\"password\": \"" + newUserPasswordForRequest + "\"}");
+        mapWithJson.put("newName", "{\"name\": \"" + newNameOfUserForRequest + "\"}");
+    }
+
     @Test
     @DisplayName("Проверяем, что можно изменить логин у авторизованного пользователя")
     public void changingAuthorizedUserEmail() {
-        String newUserEmailForRequest = RandomStringUtils.randomAlphanumeric(7) + "@gmail.com";
-        String jsonForRequest = "{\"email\": " + "\"" + newUserEmailForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newEmail");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -31,8 +40,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что можно изменить пароль у авторизованного пользователя")
     public void changingAuthorizedUserPassword() {
-        String newUserPasswordForRequest = RandomStringUtils.randomAlphanumeric(7);
-        String jsonForRequest = "{\"password\": " + "\"" + newUserPasswordForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newPassword");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -51,8 +59,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что можно изменить имя у авторизованного пользователя")
     public void changingAuthorizedUserName() {
-        String newUserNameForRequest = RandomStringUtils.randomAlphanumeric(7);
-        String jsonForRequest = "{\"name\": " + "\"" + newUserNameForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newName");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -72,8 +79,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить логин у НЕ авторизованного пользователя")
     public void changingUserLogin() {
-        String newUserLoginForRequest = RandomStringUtils.randomAlphanumeric(7) + "@gmail.com";
-        String jsonForRequest = "{\"email\": " + "\"" + newUserLoginForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newEmail");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -91,8 +97,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить пароль у НЕ авторизованного пользователя")
     public void changingUserPassword() {
-        String newUserPasswordForRequest = RandomStringUtils.randomAlphanumeric(7);
-        String jsonForRequest = "{\"password\": " + "\"" + newUserPasswordForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newPassword");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -109,8 +114,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить имя у НЕ авторизованного пользователя")
     public void changingUserName() {
-        String newUserNameForRequest = RandomStringUtils.randomAlphanumeric(7);
-        String jsonForRequest = "{\"name\": " + "\"" + newUserNameForRequest + "\"" + "}";
+        String jsonForRequest = mapWithJson.get("newName");
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());

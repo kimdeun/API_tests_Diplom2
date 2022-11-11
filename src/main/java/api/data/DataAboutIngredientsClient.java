@@ -1,5 +1,6 @@
 package api.data;
 
+import constants.EndPoints;
 import io.qameta.allure.Step;
 import model.Ingredients;
 
@@ -10,7 +11,7 @@ public class DataAboutIngredientsClient {
     public Ingredients getResponseWithIngredients() {
         return given()
                 .log().all()
-                .get("/api/ingredients")
+                .get(EndPoints.ingredientsDataEndPoint)
                 .body().as(Ingredients.class);
     }
 }

@@ -1,7 +1,7 @@
 package api.auth;
 
+import constants.EndPoints;
 import io.qameta.allure.Step;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import model.User;
 
@@ -17,7 +17,7 @@ public class AuthClient {
                 .header("Content-type", "application/json")
                 .body(user)
                 .when()
-                .post("/api/auth/register")
+                .post(EndPoints.registerEndPoint)
                 .then().log().all();
     }
 
@@ -28,7 +28,7 @@ public class AuthClient {
                 .log().all()
                 .header("Content-type", "application/json")
                 .body(user)
-                .post("/api/auth/login")
+                .post(EndPoints.loginEndPoint)
                 .then().log().all();
     }
 }

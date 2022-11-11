@@ -1,5 +1,6 @@
 package api.order;
 
+import constants.EndPoints;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
@@ -11,7 +12,7 @@ public class ReceivingUserOrdersClient {
         return given()
                 .log().all()
                 .header("Authorization", "Bearer " + tokenForRequest)
-                .get("/api/orders")
+                .get(EndPoints.ordersDataEndPoint)
                 .then().log().all();
     }
 
@@ -19,7 +20,7 @@ public class ReceivingUserOrdersClient {
     public ValidatableResponse getResponseOfUsersOrdersFromUnauthorizedUser() {
         return given()
                 .log().all()
-                .get("/api/orders")
+                .get(EndPoints.ordersDataEndPoint)
                 .then().log().all();
     }
 }

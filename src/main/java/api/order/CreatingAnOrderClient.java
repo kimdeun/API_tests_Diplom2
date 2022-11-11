@@ -1,5 +1,6 @@
 package api.order;
 
+import constants.EndPoints;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
@@ -13,7 +14,7 @@ public class CreatingAnOrderClient {
                 .header("Authorization", "Bearer " + tokenForRequest)
                 .header("Content-type", "application/json")
                 .body(jsonForRequest)
-                .post("/api/orders")
+                .post(EndPoints.ordersDataEndPoint)
                 .then().log().all();
     }
 
@@ -23,7 +24,7 @@ public class CreatingAnOrderClient {
                 .log().all()
                 .header("Content-type", "application/json")
                 .body(jsonForRequest)
-                .post("/api/orders")
+                .post(EndPoints.ordersDataEndPoint)
                 .then().log().all();
     }
 }

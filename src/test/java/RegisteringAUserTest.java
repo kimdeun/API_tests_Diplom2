@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.fail;
 
 public class RegisteringAUserTest extends BaseTest {
 
@@ -34,26 +35,38 @@ public class RegisteringAUserTest extends BaseTest {
     @DisplayName("Проверяем, что нельзя создать пользователя без почты")
     public void registeringAUserWithoutEmail() {
         userEmail = "";
-        response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
+        boolean response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
-                .body("success", equalTo(false));
+                .body("success", equalTo(false))
+                .extract().body().path("success");
+        if (response) {
+            fail();
+        }
     }
 
     @Test
     @DisplayName("Проверяем, что нельзя создать пользователя без пароля")
     public void registeringAUserWithoutPassword() {
         userPassword = "";
-        response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
+        boolean response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
-                .body("success", equalTo(false));
+                .body("success", equalTo(false))
+                .extract().body().path("success");
+        if (response) {
+            fail();
+        }
     }
 
     @Test
     @DisplayName("Проверяем, что нельзя создать пользователя без имени")
     public void registeringAUserWithoutName() {
         nameOfUser = "";
-        response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
+        boolean response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
-                .body("success", equalTo(false));
+                .body("success", equalTo(false))
+                .extract().body().path("success");
+        if (response) {
+            fail();
+        }
     }
 }

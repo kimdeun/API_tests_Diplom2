@@ -6,7 +6,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 
-import static io.restassured.RestAssured.given;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class BaseTest {
     AuthClient authClient = new AuthClient();
@@ -17,7 +18,10 @@ public class BaseTest {
     ValidatableResponse response;
     String bearerToken;
     String tokenForRequest;
-
+    HashMap<String, String> mapWithJson = new HashMap<>();
+    String newUserEmailForRequest = RandomStringUtils.randomAlphanumeric(7) + "@gmail.com";
+    String newUserPasswordForRequest = RandomStringUtils.randomAlphabetic(7);
+    String newNameOfUserForRequest = RandomStringUtils.randomAlphabetic(7);
 
     @Before
     public void setUp() {
@@ -27,14 +31,8 @@ public class BaseTest {
     @After
     public void tearDown() {
         if (tokenForRequest != null) {
-            given()
-                    .header("Authorization", "Bearer " + tokenForRequest)
-                    .when()
-                    .delete("api/auth/user")
-                    .then()
+            changingDataClient.getResponseForDeletingUser(tokenForRequest)
                     .statusCode(202);
-            authClient.getResponseForAuthorizationNewUser(userEmail, userPassword)
-                    .statusCode(401);
         }
     }
 }
