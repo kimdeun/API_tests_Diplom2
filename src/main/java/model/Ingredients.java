@@ -26,7 +26,7 @@ public class Ingredients {
         this.data = data;
     }
 
-    public List<String> creatingListOfIngredientsId() {
+    public List<String> createListOfIngredientsId() {
         List<Data> data = dataAboutIngredientsClient.getResponseWithIngredients().getData();
         int sizeOfIngredients = data.size();
 

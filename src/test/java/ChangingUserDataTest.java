@@ -1,26 +1,18 @@
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class ChangingUserDataTest extends BaseTest {
-    @Override
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
-        mapWithJson.put("newEmail", "{\"email\": \"" + newUserEmailForRequest + "\"}");
-        mapWithJson.put("newPassword", "{\"password\": \"" + newUserPasswordForRequest + "\"}");
-        mapWithJson.put("newName", "{\"name\": \"" + newNameOfUserForRequest + "\"}");
-    }
-
+    HashMap<String, String> mapOfUserUpdatingDataForRequest = new HashMap<>();
     @Test
     @DisplayName("Проверяем, что можно изменить логин у авторизованного пользователя")
     public void changingAuthorizedUserEmail() {
-        String jsonForRequest = mapWithJson.get("newEmail");
+        mapOfUserUpdatingDataForRequest.put("email", newUserEmailForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -30,7 +22,7 @@ public class ChangingUserDataTest extends BaseTest {
         tokenForRequest = bearerToken.substring(7);
         String currentEmail = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.email");
-        changingDataClient.getResponseForUpdatingData(tokenForRequest, jsonForRequest)
+        changingDataClient.getResponseForUpdatingData(tokenForRequest, mapOfUserUpdatingDataForRequest)
                 .statusCode(200);
         String newEmail = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.email");
@@ -40,7 +32,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что можно изменить пароль у авторизованного пользователя")
     public void changingAuthorizedUserPassword() {
-        String jsonForRequest = mapWithJson.get("newPassword");
+        mapOfUserUpdatingDataForRequest.put("password", newUserPasswordForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -48,7 +40,7 @@ public class ChangingUserDataTest extends BaseTest {
                 .statusCode(200);
         bearerToken = response.extract().body().path("accessToken");
         tokenForRequest = bearerToken.substring(7);
-        changingDataClient.getResponseForUpdatingData(tokenForRequest, jsonForRequest)
+        changingDataClient.getResponseForUpdatingData(tokenForRequest, mapOfUserUpdatingDataForRequest)
                 .statusCode(200);
         authClient.getResponseForAuthorizationNewUser(userEmail, userPassword)
                 .statusCode(401);
@@ -59,7 +51,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что можно изменить имя у авторизованного пользователя")
     public void changingAuthorizedUserName() {
-        String jsonForRequest = mapWithJson.get("newName");
+        mapOfUserUpdatingDataForRequest.put("name", newNameOfUserForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -69,7 +61,7 @@ public class ChangingUserDataTest extends BaseTest {
         tokenForRequest = bearerToken.substring(7);
         String currentName = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.name");
-        changingDataClient.getResponseForUpdatingData(tokenForRequest, jsonForRequest)
+        changingDataClient.getResponseForUpdatingData(tokenForRequest, mapOfUserUpdatingDataForRequest)
                 .statusCode(200);
         String newName = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.name");
@@ -79,7 +71,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить логин у НЕ авторизованного пользователя")
     public void changingUserLogin() {
-        String jsonForRequest = mapWithJson.get("newEmail");
+        mapOfUserUpdatingDataForRequest.put("email", newUserEmailForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -87,7 +79,7 @@ public class ChangingUserDataTest extends BaseTest {
         tokenForRequest = bearerToken.substring(7);
         String currentEmail = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.email");
-        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(jsonForRequest)
+        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(mapOfUserUpdatingDataForRequest)
                 .statusCode(401).assertThat().body("success", equalTo(false));
         String newEmail = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.email");
@@ -97,13 +89,13 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить пароль у НЕ авторизованного пользователя")
     public void changingUserPassword() {
-        String jsonForRequest = mapWithJson.get("newPassword");
+        mapOfUserUpdatingDataForRequest.put("password", newUserPasswordForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
         bearerToken = response.extract().body().path("accessToken");
         tokenForRequest = bearerToken.substring(7);
-        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(jsonForRequest)
+        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(mapOfUserUpdatingDataForRequest)
                 .statusCode(401).assertThat().body("success", equalTo(false));
         authClient.getResponseForAuthorizationNewUser(userEmail, userPassword)
                 .statusCode(200);
@@ -114,7 +106,7 @@ public class ChangingUserDataTest extends BaseTest {
     @Test
     @DisplayName("Проверяем, что нельзя изменить имя у НЕ авторизованного пользователя")
     public void changingUserName() {
-        String jsonForRequest = mapWithJson.get("newName");
+        mapOfUserUpdatingDataForRequest.put("name", newNameOfUserForRequest);
         response = authClient.getResponseForRegisteringNewUser(userEmail, userPassword, nameOfUser)
                 .assertThat()
                 .body("accessToken", notNullValue());
@@ -122,7 +114,7 @@ public class ChangingUserDataTest extends BaseTest {
         tokenForRequest = bearerToken.substring(7);
         String currentName = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.name");
-        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(jsonForRequest)
+        changingDataClient.getResponseForUpdatingDataWithoutAuthorization(mapOfUserUpdatingDataForRequest)
                 .statusCode(401).assertThat().body("success", equalTo(false));
         String newName = changingDataClient.getResponseWithActualData(tokenForRequest)
                 .extract().body().path("user.name");

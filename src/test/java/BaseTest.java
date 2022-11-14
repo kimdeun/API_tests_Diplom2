@@ -6,9 +6,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
 public class BaseTest {
     AuthClient authClient = new AuthClient();
     ChangingDataClient changingDataClient = new ChangingDataClient();
@@ -18,7 +15,6 @@ public class BaseTest {
     ValidatableResponse response;
     String bearerToken;
     String tokenForRequest;
-    HashMap<String, String> mapWithJson = new HashMap<>();
     String newUserEmailForRequest = RandomStringUtils.randomAlphanumeric(7) + "@gmail.com";
     String newUserPasswordForRequest = RandomStringUtils.randomAlphabetic(7);
     String newNameOfUserForRequest = RandomStringUtils.randomAlphabetic(7);
